@@ -5,7 +5,7 @@
   "author": "Harsh Thakur",
   "repository": {
     "type": "git",
-    "url": "https://github.com/iharsh02/chaoscrowd.git"
+    "url": "https://github.com/iharsh02/ChaosCrowd.git"
   },
   "scripts": {
     "dev": "next dev",
