@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useWallet } from '@solana/wallet-adapter-react'
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
@@ -19,6 +20,7 @@ type FormData = {
 }
 
 export default function Form() {
+  const { publicKey, connected } = useWallet()
   const [formData, setFormData] = useState<FormData>({
     title: '',
     imageUrl: '',
@@ -28,6 +30,15 @@ export default function Form() {
     wallet: '',
     actions: [{ value: '' }]
   })
+
+  useEffect(() => {
+    if (connected && publicKey) {
+      setFormData(prevState => ({
+        ...prevState,
+        wallet: publicKey.toBase58()
+      }))
+    }
+  }, [connected, publicKey])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target
