@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { NavbarItems } from "./Navbar/NavbarItems";
 import { BsChevronDown } from "react-icons/bs";
 import { MobileMenu } from "./Navbar/MobileMenu";
+import { signIn, signOut } from "next-auth/react";
 
 export function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -60,6 +61,22 @@ export function Navbar() {
           <div className="hidden lg:flex gap-2">
             <WalletConnection />
             <ModeToggle />
+            <button
+              className="bg-primary-500   dark:text-white text-black px-4 py-2 rounded-lg"
+              onClick={() => {
+                signIn(undefined, { callbackUrl: "/dashboard" });
+              }}
+            >
+              Sign in
+            </button>
+            <button
+              className="bg-primary-500   dark:text-white text-black px-4 py-2 rounded-lg"
+              onClick={() => {
+                signOut({ callbackUrl: "/" });
+              }}
+            >
+              Sign out
+            </button>
           </div>
 
           {/* Mobile view - Hamburger icon */}

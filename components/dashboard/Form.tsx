@@ -1,98 +1,124 @@
-'use client'
+"use client";
 
-import { useState, useEffect } from 'react'
-import { useWallet } from '@solana/wallet-adapter-react'
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
-import { PlusCircle, X } from 'lucide-react'
+import { useState, useEffect } from "react";
+import { useWallet } from "@solana/wallet-adapter-react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { PlusCircle, X } from "lucide-react";
 
 type FormData = {
-  title: string,
-  imageUrl: string,
-  description: string,
-  label: string,
-  customInput: boolean,
-  wallet: string,
-  actions: { value: string }[]
-}
+  title: string;
+  imageUrl: string;
+  description: string;
+  label: string;
+  customInput: boolean;
+  wallet: string;
+  actions: { value: string }[];
+};
 
 export default function Form() {
-  const { publicKey, connected } = useWallet()
+  const { publicKey, connected } = useWallet();
   const [formData, setFormData] = useState<FormData>({
-    title: '',
-    imageUrl: '',
-    description: '',
-    label: '',
+    title: "",
+    imageUrl: "",
+    description: "",
+    label: "",
     customInput: false,
-    wallet: '',
-    actions: [{ value: '' }]
-  })
+    wallet: "",
+    actions: [{ value: "" }],
+  });
 
   useEffect(() => {
     if (connected && publicKey) {
-      setFormData(prevState => ({
+      setFormData((prevState) => ({
         ...prevState,
-        wallet: publicKey.toBase58()
-      }))
+        wallet: publicKey.toBase58(),
+      }));
     }
-  }, [connected, publicKey])
+  }, [connected, publicKey]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value, type } = e.target
-    setFormData(prevState => ({
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    const { name, value, type } = e.target;
+    setFormData((prevState) => ({
       ...prevState,
-      [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value
-    }))
-  }
+      [name]:
+        type === "checkbox" ? (e.target as HTMLInputElement).checked : value,
+    }));
+  };
 
   const handleCheckboxChange = (checked: boolean) => {
-    setFormData(prevState => ({
+    setFormData((prevState) => ({
       ...prevState,
-      customInput: checked
-    }))
-  }
+      customInput: checked,
+    }));
+  };
 
   const handleActionChange = (index: number, value: string) => {
-    const newActions = [...formData.actions]
-    newActions[index] = { value }
-    setFormData(prevState => ({
+    const newActions = [...formData.actions];
+    newActions[index] = { value };
+    setFormData((prevState) => ({
       ...prevState,
-      actions: newActions
-    }))
-  }
+      actions: newActions,
+    }));
+  };
 
   const addAction = () => {
     if (formData.actions.length < 3) {
-      setFormData(prevState => ({
+      setFormData((prevState) => ({
         ...prevState,
-        actions: [...prevState.actions, { value: '' }]
-      }))
+        actions: [...prevState.actions, { value: "" }],
+      }));
     }
-  }
+  };
 
   const removeAction = (index: number) => {
-    setFormData(prevState => ({
+    setFormData((prevState) => ({
       ...prevState,
-      actions: prevState.actions.filter((_, i) => i !== index)
-    }))
-  }
+      actions: prevState.actions.filter((_, i) => i !== index),
+    }));
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    console.log(formData)
-  }
+    e.preventDefault();
+    console.log(formData);
+
+    async function submitBlink() {
+      const response = await fetch("/api/submitBlink", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+      const res = await response.json();
+      console.log(res);
+    }
+    submitBlink();
+  };
 
   return (
     <div className="flex items-center justify-center p-4">
       <div className="w-full max-w-md bg-white dark:bg-neutral-900 border border-gray-200 dark:border-gray-800 rounded-lg shadow-sm">
         <div className="p-4">
-          <h1 className="text-xl uppercase font-bold mb-4 text-center text-black dark:text-white">Create Campaign</h1>
-          <form onSubmit={handleSubmit} className="space-y-3 text-black dark:text-white">
+          <h1 className="text-xl uppercase font-bold mb-4 text-center text-black dark:text-white">
+            Create Campaign
+          </h1>
+          <form
+            onSubmit={handleSubmit}
+            className="space-y-3 text-black dark:text-white"
+          >
             <div>
-              <Label htmlFor="wallet" className="text-sm font-medium text-gray-700 dark:text-gray-300">Wallet</Label>
+              <Label
+                htmlFor="wallet"
+                className="text-sm font-medium text-gray-700 dark:text-gray-300"
+              >
+                Wallet
+              </Label>
               <Input
                 id="wallet"
                 name="wallet"
@@ -103,7 +129,12 @@ export default function Form() {
               />
             </div>
             <div>
-              <Label htmlFor="title" className="text-sm font-medium text-gray-700 dark:text-gray-300">Title</Label>
+              <Label
+                htmlFor="title"
+                className="text-sm font-medium text-gray-700 dark:text-gray-300"
+              >
+                Title
+              </Label>
               <Input
                 id="title"
                 name="title"
@@ -114,7 +145,12 @@ export default function Form() {
               />
             </div>
             <div>
-              <Label htmlFor="description" className="text-sm font-medium text-gray-700 dark:text-gray-300">Description</Label>
+              <Label
+                htmlFor="description"
+                className="text-sm font-medium text-gray-700 dark:text-gray-300"
+              >
+                Description
+              </Label>
               <Textarea
                 id="description"
                 name="description"
@@ -127,7 +163,12 @@ export default function Form() {
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <Label htmlFor="imageUrl" className="text-sm font-medium text-gray-700 dark:text-gray-300">Image URL</Label>
+                <Label
+                  htmlFor="imageUrl"
+                  className="text-sm font-medium text-gray-700 dark:text-gray-300"
+                >
+                  Image URL
+                </Label>
                 <Input
                   id="imageUrl"
                   name="imageUrl"
@@ -139,7 +180,12 @@ export default function Form() {
                 />
               </div>
               <div>
-                <Label htmlFor="label" className="text-sm font-medium text-gray-700 dark:text-gray-300">Label</Label>
+                <Label
+                  htmlFor="label"
+                  className="text-sm font-medium text-gray-700 dark:text-gray-300"
+                >
+                  Label
+                </Label>
                 <Input
                   id="label"
                   name="label"
@@ -151,7 +197,9 @@ export default function Form() {
               </div>
             </div>
             <div>
-              <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">Action(Max 3)</Label>
+              <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                Action(Max 3)
+              </Label>
               {formData.actions.map((action, index) => (
                 <div key={index} className="flex items-center space-x-2 mt-1">
                   <Input
@@ -200,10 +248,12 @@ export default function Form() {
                 Custom Input
               </Label>
             </div>
-            <Button type="submit" className="w-full">Submit</Button>
+            <Button type="submit" className="w-full">
+              Submit
+            </Button>
           </form>
         </div>
       </div>
     </div>
-  )
+  );
 }

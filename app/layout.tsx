@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/provider/theme-provider";
 import AppWalletProvider from "@/provider/AppWalletProvider";
 import Boilerplate from "@/components/global/Boilerplate";
+import { Providers } from "./provider/provider";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -18,7 +19,8 @@ const geistMono = localFont({
 
 export const metadata: Metadata = {
   title: "ChaosCrowd",
-  description: "Empowering creators and innovators to bring their ideas to life.",
+  description:
+    "Empowering creators and innovators to bring their ideas to life.",
 };
 
 export default function RootLayout({
@@ -35,10 +37,11 @@ export default function RootLayout({
           attribute="class"
           defaultTheme="system"
           enableSystem
-          disableTransitionOnChange>
+          disableTransitionOnChange
+        >
           <AppWalletProvider>
             <Boilerplate>
-              {children}
+              <Providers>{children}</Providers>
             </Boilerplate>
           </AppWalletProvider>
         </ThemeProvider>
