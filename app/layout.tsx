@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { ThemeProvider } from "@/provider/theme-provider";
 import AppWalletProvider from "@/provider/AppWalletProvider";
+import Boilerplate from "@/components/global/Boilerplate";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -36,7 +37,9 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange>
           <AppWalletProvider>
-            {children}
+            <Boilerplate>
+              {children}
+            </Boilerplate>
           </AppWalletProvider>
         </ThemeProvider>
       </body>

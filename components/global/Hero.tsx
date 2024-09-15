@@ -1,6 +1,11 @@
+"use client";
+
+import { useRouter } from "next/navigation";
 import { Button } from "../ui/button";
 
 export function Hero() {
+  const router = useRouter();
+
   return (
     <section className="flex items-center justify-center min-h-[80vh] px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto text-center">
@@ -14,6 +19,7 @@ export function Hero() {
         </p>
         <Button
           className="inline-flex items-center px-6 py-3 text-lg font-semibold text-white bg-black dark:text-black dark:bg-white rounded-full hover:bg-gray-800 dark:hover:bg-gray-200 transition duration-300 ease-in-out"
+        onClick={()=>router.push("/dashboard")}
         >
           Get Started
         </Button>
