@@ -8,41 +8,42 @@ datasource db {
 }
 
 model User {
-  id             String                           @id @default(cuid())
+  id             String    @id @default(cuid())
   name           String?
-  email          String?                          @unique
+  email          String?   @unique
   emailVerified  DateTime? @map("email_verified")
   image          String?
   hashedPassword String?
   accounts       Account[]
   sessions       Session[]
   blinks         Blink[]
+
   @@map("users")
 }
 
 model Account {
-  id                String                              @id @default(cuid())
+  id                String  @id @default(cuid())
   userId            String  @map("user_id")
   type              String
   provider          String
   providerAccountId String  @map("provider_account_id")
-  refresh_token     String?                             @db.Text
-  access_token      String?                             @db.Text
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String?                             @db.Text
+  id_token          String? @db.Text
   session_state     String?
 
-  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
   @@map("accounts")
 }
 
 model Session {
-  id           String                         @id @default(cuid())
-  sessionToken String   @map("session_token") @unique
+  id           String   @id @default(cuid())
+  sessionToken String   @unique @map("session_token")
   userId       String   @map("user_id")
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -51,11 +52,10 @@ model Session {
 }
 
 model Blink {
-  id        String    @id @default(cuid())
-  key       String    @unique
+  id        String   @id @default(cuid())
   data      Json
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 

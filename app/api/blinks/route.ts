@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
-import prisma from "@/lib/prismaDb"; 
+import prisma from "@/lib/prismaDb";
 
 export async function POST(request: NextRequest) {
   try {
@@ -10,25 +10,17 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { key, data } = await request.json();
+    const data = await request.json();
 
-    if (!key || typeof key !== "string") {
-      return NextResponse.json(
-        { error: "Invalid or missing key" },
-        { status: 400 }
-      );
-    }
-
-    if (!data || typeof data !== "object") {
+    if (!data) {
       return NextResponse.json(
         { error: "Invalid or missing data" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     const blink = await prisma.blink.create({
       data: {
-        key,
         data,
         userId: session.user.id,
       },
@@ -39,7 +31,7 @@ export async function POST(request: NextRequest) {
     console.error("Error creating blink:", error);
     return NextResponse.json(
       { error: "Failed to create blink" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
