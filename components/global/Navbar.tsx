@@ -8,7 +8,8 @@ import { useRouter } from "next/navigation";
 import { NavbarItems } from "./Navbar/NavbarItems";
 import { BsChevronDown } from "react-icons/bs";
 import { MobileMenu } from "./Navbar/MobileMenu";
-
+import { Button } from "../ui/button";
+import { signIn, signOut } from "next-auth/react";
 export function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const router = useRouter();
@@ -21,7 +22,6 @@ export function Navbar() {
   const toggleMobileMenu = useCallback(() => {
     setMobileMenu((current) => !current);
   }, []);
-
   return (
     <div className="fixed top-5 left-0 right-0">
       <div className="flex justify-center">
@@ -34,7 +34,8 @@ export function Navbar() {
             >
               ChaosCrowd
             </div>
-
+            <Button onClick={() => signIn()}>SignIn</Button>
+            <Button onClick={() => signOut()}>SignOut</Button>
             {/* Desktop view */}
             <div className="hidden lg:flex gap-4 text-sm">
               <NavbarItems label="Discover" />
