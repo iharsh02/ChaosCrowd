@@ -1,11 +1,9 @@
 import { Adapter } from "next-auth/adapters";
 import GoogleProvider from "next-auth/providers/google";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import CredentialsProvider from "next-auth/providers/credentials";
 import { SessionStrategy } from "next-auth";
 import db from "./prismaDb";
 import type { AuthOptions, DefaultSession } from "next-auth";
-import bcrypt from "bcrypt";
 
 declare module "next-auth" {
   interface Session extends DefaultSession {
@@ -28,46 +26,6 @@ export const authOptions: AuthOptions = {
       clientId: process.env.GOOGLE_CLIENT_ID ?? "",
       clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "",
     }),
-    CredentialsProvider({
-      name: "Credentials",
-      credentials: {
-        email: {
-          label: "Email",
-          type: "text",
-          placeholder: "example@gmail.com",
-        },
-        password: {
-          label: "Password",
-          type: "password",
-          placeholder: "Password",
-        },
-      },
-      async authorize(credentials) {
-        if (!credentials?.email || !credentials.password) {
-          throw new Error("Email and Password required");
-        }
-        const user = await db.user.findUnique({
-          where: {
-            email: credentials.email,
-          },
-        });
-
-        if (!user || !user.hashedPassword) {
-          throw new Error("Email does not exist");
-        }
-
-        const isCorrectPassword = await bcrypt.compare(
-          credentials.password,
-          user.hashedPassword
-        );
-
-        if (!isCorrectPassword) {
-          throw new Error("Incorrect password");
-        }
-
-        return user;
-      },
-    }),
   ],
   debug: process.env.NODE_ENV === "development",
   secret: process.env.NEXTAUTH_SECRET,
@@ -82,7 +40,7 @@ export const authOptions: AuthOptions = {
         token.id = user.id;
         token.accessToken = user.accessToken;
       }
-      return token ;
+      return token;
     },
     async session({ session, token }) {
       if (token) {
@@ -91,5 +49,8 @@ export const authOptions: AuthOptions = {
       }
       return session;
     },
+  },
+  pages: {
+    signIn: "/auth/login",
   },
 };
