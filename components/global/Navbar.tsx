@@ -1,27 +1,27 @@
 "use client";
-
-import React, { useCallback, useState } from "react";
 import WalletConnection from "../adapterUi/WalletConnection";
 import { ModeToggle } from "./toggle-mode";
-import { Menu } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { NavbarItems } from "./Navbar/NavbarItems";
 import { BsChevronDown } from "react-icons/bs";
-import { MobileMenu } from "./Navbar/MobileMenu";
-import { Button } from "../ui/button";
-import { signIn, signOut } from "next-auth/react";
+import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
+import { signIn, signOut, useSession } from "next-auth/react";
+import { FaUserAstronaut } from "react-icons/fa";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
+import { IoLogOutOutline } from "react-icons/io5";
+import { GoSignIn } from "react-icons/go";
 export function Navbar() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const router = useRouter();
-  const [mobileMenu, setMobileMenu] = useState(false);
 
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
+  const session = useSession();
 
-  const toggleMobileMenu = useCallback(() => {
-    setMobileMenu((current) => !current);
-  }, []);
   return (
     <div className="fixed top-5 left-0 right-0">
       <div className="flex justify-center">
@@ -34,58 +34,143 @@ export function Navbar() {
             >
               ChaosCrowd
             </div>
-            <Button onClick={() => signIn()}>SignIn</Button>
-            <Button onClick={() => signOut()}>SignOut</Button>
             {/* Desktop view */}
-            <div className="hidden lg:flex gap-4 text-sm">
-              <NavbarItems label="Discover" />
-              <NavbarItems label="Create" />
-            </div>
 
-            <div
-              className="text-sm flex items-center gap-2 lg:hidden"
-              onClick={toggleMobileMenu}
-            >
-              <p className="test-sm">Browse</p>
-              <BsChevronDown
-                className={`text-black dark:text-white transition ${
-                  mobileMenu ? `rotate-180` : `rotate-0`
-                }`}
+            <div className="hidden lg:flex gap-4 text-sm">
+              <NavbarItems
+                label="Discover"
+                onClick={() => router.push("/discover")}
+              />
+              <NavbarItems
+                label="Create"
+                onClick={() => router.push("/dashboard")}
               />
             </div>
 
-            <MobileMenu visible={mobileMenu} />
+            {/* mobile view */}
+            <DropdownMenu>
+              <DropdownMenuTrigger>
+                <div className="text-sm flex items-center gap-2 lg:hidden">
+                  <p className="test-sm">Browse</p>
+                  <BsChevronDown />
+                </div>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem onClick={() => router.push("/discover")}>
+                  Discover
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => router.push("/dashboard")}>
+                  Create
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
 
           {/* Desktop view */}
-          <div className="hidden lg:flex gap-2">
-            <WalletConnection />
-            <ModeToggle />
-          </div>
+          <div className="flex gap-2">
+            <div className="hidden md:block">
+              <WalletConnection />
+            </div>
 
-          {/* Mobile view - Hamburger icon */}
-          <div className="lg:hidden">
-            <button onClick={toggleMenu} className="p-2">
-              <Menu size={24} />
-            </button>
+            {!session.data?.user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger>
+                  <Avatar className="flex items-center cursor-pointer">
+                    <AvatarImage
+                      src="https://github.com/shadcn.png"
+                      height={30}
+                      width={30}
+                      className="rounded-full"
+                    />
+                    <AvatarFallback>CN</AvatarFallback>
+                  </Avatar>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuItem>
+                    <div className="flex items-center justify-center md:hidden">
+                      <WalletConnection />
+                    </div>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem>
+                    <div className="flex items-center justify-around gap-5 ">
+                      <ModeToggle />
+                      <span>Toggle Mode</span>
+                    </div>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem>
+                    <div
+                      className="flex items-center gap-5 justify-around  w-full"
+                      onClick={() => signIn()}
+                    >
+                      <div className="text-2xl">
+                        <GoSignIn />
+                      </div>
+                      <span>Sign In</span>
+                    </div>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <DropdownMenu>
+                <DropdownMenuTrigger>
+                  <Avatar className="flex items-center cursor-pointer">
+                    <AvatarImage
+                      src={session?.data.user.image}
+                      height={40}
+                      width={40}
+                      className="rounded-full"
+                    />
+                    <AvatarFallback>
+                      <FaUserAstronaut />
+                    </AvatarFallback>
+                  </Avatar>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuLabel>
+                    <div className="flex items-center justify-between gap-2">
+                      <Avatar>
+                        <AvatarImage
+                          src={session.data.user.image}
+                          width={40}
+                          height={40}
+                          className="rounded-full"
+                        />
+                      </Avatar>
+                      <div>{session.data.user.name}</div>
+                    </div>
+                  </DropdownMenuLabel>
+                  <DropdownMenuItem>
+                    <div className="flex items-center justify-center md:hidden">
+                      <WalletConnection />
+                    </div>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem>
+                    <div className="flex justify-between items-center gap-4">
+                      <ModeToggle /> <span>Toggle Mode</span>
+                    </div>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem>
+                    <div
+                      className="flex justify-around w-full gap-2"
+                      onClick={() => signOut()}
+                    >
+                      <div className="text-2xl">
+                        <IoLogOutOutline />
+                      </div>
+                      <span>Log Out</span>
+                    </div>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
           </div>
         </div>
       </div>
-
-      {/* Mobile menu */}
-      {isMenuOpen && (
-        <div className="lg:hidden absolute top-full left-5 right-5 mt-2 bg-white dark:bg-neutral-800 border rounded-lg p-5 ">
-          <div className="flex flex-col gap-4 text-black dark:text-white">
-            <div className="flex gap-2 justify-around  items-center">
-              <p>Connect Wallet</p>
-              <WalletConnection />
-            </div>
-            <div className="flex gap-2 justify-around items-center">
-              <p>Switch Modes</p> <ModeToggle />
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

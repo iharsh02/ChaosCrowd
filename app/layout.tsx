@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/provider/theme-provider";
 import AppWalletProvider from "@/provider/AppWalletProvider";
 import Boilerplate from "@/components/global/Boilerplate";
+import { Providers } from "@/provider/SessionProvider";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -31,17 +32,19 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange>
-          <AppWalletProvider>
-            <Boilerplate>
-              {children}
-            </Boilerplate>
-          </AppWalletProvider>
-        </ThemeProvider>
+        <Providers>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange>
+            <AppWalletProvider>
+              <Boilerplate>
+                {children}
+              </Boilerplate>
+            </AppWalletProvider>
+          </ThemeProvider>
+        </Providers>
       </body>
     </html>
   );
