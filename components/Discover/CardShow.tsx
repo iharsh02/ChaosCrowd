@@ -1,5 +1,6 @@
+"use client";
 import { useState, useEffect } from "react";
-import fetchUserById  from "@/lib/fetchUser"; // Import the server action
+import fetchUserById from "@/lib/fetchUser"; // Import the server action
 
 const UserFetch = () => {
   const [userData, setUserData] = useState(null);
@@ -9,7 +10,8 @@ const UserFetch = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await fetchUserById("cm163a07j00034mgc3k6x0yej"); // Fetch user data from server
+        const data = await fetchUserById("cm168wzb8000010pmx5fisfeu");
+        console.log(data.blinks); // Fetch user data from server
         setUserData(data);
         setLoading(false);
       } catch (err: any) {
@@ -33,5 +35,3 @@ const UserFetch = () => {
 };
 
 export default UserFetch;
-
-

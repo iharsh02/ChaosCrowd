@@ -11,6 +11,8 @@ export async function middleware(request: NextRequest) {
   if (!session && !request.nextUrl.pathname.startsWith("/api/auth")) {
     return NextResponse.redirect(new URL("/", request.url));
   }
+
+  return NextResponse.next();
 }
 export const config = {
   matcher: ["/discover", "/dashboard"],

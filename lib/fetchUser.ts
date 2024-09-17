@@ -2,12 +2,14 @@
 
 import db from "@/lib/prismaDb";
 
-
 export default async function fetchUserById(userId: string) {
   try {
     const user = await db.user.findUnique({
       where: {
         id: userId,
+      },
+      include: {
+        blinks: true,
       },
     });
 

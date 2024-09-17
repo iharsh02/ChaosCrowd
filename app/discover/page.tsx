@@ -16,7 +16,7 @@ export default function DiscoverPage() {
       <section className="lg:w-1/2 m-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 mt-5">
         <Card />
         <Card /> <Card />
-        <UserFetch/>
+        <UserFetch />
       </section>
     </div>
   );
