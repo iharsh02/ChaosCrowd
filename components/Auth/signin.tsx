@@ -12,7 +12,7 @@ export function Login() {
   };
 
   return (
-    <div className="h-[80vh] flex items-center justify-center p-4">
+    <div className="h-[100vh] flex items-center justify-center p-4">
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}

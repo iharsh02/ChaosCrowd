@@ -78,7 +78,7 @@ export function Navbar() {
                 <DropdownMenuTrigger>
                   <Avatar className="flex items-center cursor-pointer">
                     <AvatarImage
-                      src="https://github.com/shadcn.png"
+                      src="/avatar.png"
                       height={30}
                       width={30}
                       className="rounded-full"
