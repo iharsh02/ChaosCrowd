@@ -1,7 +1,7 @@
-import React from 'react';
+import React from "react";
 import { Share, Copy } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useToast } from '@/hooks/use-toast';
+import { useToast } from "@/hooks/use-toast";
 
 interface CardProps {
   id: string;
@@ -14,40 +14,46 @@ interface CardProps {
 export function Card({ name, title, image, description, id }: CardProps) {
   const { toast } = useToast();
 
-  const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
+  const baseUrl = typeof window !== "undefined" ? window.location.origin : "";
   const specificPath = `/api/actions/donate?id=${id}`;
   const fullUrl = `${baseUrl}${specificPath}`;
-  
+
   // New Solana action URL
-  const solanaActionUrl = `https://dial.to/?action=solana-action:${encodeURIComponent(fullUrl)}`;
+  const solanaActionUrl = `https://dial.to/?action=solana-action:${encodeURIComponent(
+    fullUrl
+  )}&cluster=devnet`;
 
   const handleCopyUrl = () => {
-    navigator.clipboard.writeText(solanaActionUrl)
+    navigator.clipboard
+      .writeText(solanaActionUrl)
       .then(() => {
         toast({
           title: "URL Copied",
-          description: "The Solana action URL has been copied to your clipboard.",
-          className: "bg-green-800 text-white border-green-600"
+          description:
+            "The Solana action URL has been copied to your clipboard.",
+          className: "bg-green-800 text-white border-green-600",
         });
       })
       .catch((err) => {
-        console.error('Failed to copy URL: ', err);
+        console.error("Failed to copy URL: ", err);
         toast({
           title: "Error",
           description: "Failed to copy URL. Please try again.",
           variant: "destructive",
-          className: "bg-red-500 text-white border-red-600"
+          className: "bg-red-500 text-white border-red-600",
         });
       });
   };
 
   const handleShare = () => {
-    const tweetText = encodeURIComponent(`Check out this Solana campaign: ${title}\n\n`);
+    const tweetText = encodeURIComponent(
+      `Check out this Solana campaign: ${title}\n\n`
+    );
     const tweetUrl = encodeURIComponent(solanaActionUrl);
     const twitterShareUrl = `https://twitter.com/intent/tweet?text=${tweetText}&url=${tweetUrl}`;
-    
+
     // Open Twitter share dialog in a new window
-    window.open(twitterShareUrl, '_blank');
+    window.open(twitterShareUrl, "_blank");
   };
 
   return (
@@ -66,8 +72,8 @@ export function Card({ name, title, image, description, id }: CardProps) {
           alt="image"
         />
         <div className="mt-4 flex justify-between text-gray-500">
-          <Button 
-            variant="ghost" 
+          <Button
+            variant="ghost"
             className="flex items-center space-x-2 hover:text-green-500"
             onClick={handleShare}
           >
