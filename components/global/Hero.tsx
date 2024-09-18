@@ -2,10 +2,11 @@
 
 import { useRouter } from "next/navigation";
 import { Button } from "../ui/button";
+import { signIn, useSession } from "next-auth/react";
 
 export function Hero() {
   const router = useRouter();
-
+  const session = useSession();
   return (
     <section className="flex items-center justify-center min-h-[80vh] px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto text-center">
@@ -17,12 +18,21 @@ export function Hero() {
         <p className="text-lg sm:text-xl text-gray-600 dark:text-gray-400 mb-8 max-w-2xl mx-auto">
           Join our community of creators and backers.Connect with creators and supporters to fund and launch innovative projects on Solana. Make an impact
         </p>
+
+{(!session.data?.user) ? 
         <Button
+          className="inline-flex items-center px-6 py-3 text-lg font-semibold text-white bg-black dark:text-black dark:bg-white rounded-full hover:bg-gray-800 dark:hover:bg-gray-200 transition duration-300 ease-in-out"
+        onClick={()=>signIn()}
+        >
+          Sign In
+        </Button>
+        : <Button
           className="inline-flex items-center px-6 py-3 text-lg font-semibold text-white bg-black dark:text-black dark:bg-white rounded-full hover:bg-gray-800 dark:hover:bg-gray-200 transition duration-300 ease-in-out"
         onClick={()=>router.push("/dashboard")}
         >
           Get Started
         </Button>
+}
       </div>
     </section>
   )

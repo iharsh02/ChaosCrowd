@@ -4,6 +4,8 @@ import "./globals.css";
 import { ThemeProvider } from "@/provider/theme-provider";
 import AppWalletProvider from "@/provider/AppWalletProvider";
 import Boilerplate from "@/components/global/Boilerplate";
+import { Providers } from "@/provider/SessionProvider";
+import { Toaster } from "@/components/ui/toaster";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -18,7 +20,8 @@ const geistMono = localFont({
 
 export const metadata: Metadata = {
   title: "ChaosCrowd",
-  description: "Empowering creators and innovators to bring their ideas to life.",
+  description:
+    "Empowering creators and innovators to bring their ideas to life.",
 };
 
 export default function RootLayout({
@@ -31,17 +34,21 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange>
-          <AppWalletProvider>
-            <Boilerplate>
-              {children}
-            </Boilerplate>
-          </AppWalletProvider>
-        </ThemeProvider>
+        <Providers>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <AppWalletProvider>
+              <Boilerplate>
+                {children}
+                <Toaster />
+              </Boilerplate>
+            </AppWalletProvider>
+          </ThemeProvider>
+        </Providers>
       </body>
     </html>
   );

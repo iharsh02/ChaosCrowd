@@ -24,7 +24,7 @@ export default function HowItWorks() {
           <dl className="space-y-10 md:space-y-0 md:grid md:grid-cols-3 md:gap-x-8 md:gap-y-10">
             {steps.map((step, index) => (
               <div key={index} className="flex">
-                <div className="absolute flex items-center justify-center h-12 w-12 rounded-md bg-black dark:bg-white text-white dark:text-black">
+                <div className="flex items-center absolute h-12 w-12 -z-0 justify-center rounded-md bg-black dark:bg-white text-white dark:text-black">
                   <step.icon className="h-6 w-6" aria-hidden="true" />
                 </div>
                 <div>
