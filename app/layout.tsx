@@ -5,7 +5,7 @@ import { ThemeProvider } from "@/provider/theme-provider";
 import AppWalletProvider from "@/provider/AppWalletProvider";
 import Boilerplate from "@/components/global/Boilerplate";
 import { Providers } from "@/provider/SessionProvider";
-import { Toaster } from "@/components/ui/sonner";
+import { Toaster } from "@/components/ui/toaster";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",

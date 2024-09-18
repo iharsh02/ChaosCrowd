@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { PlusCircle, X } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 type FormData = {
   title: string;
@@ -30,7 +31,9 @@ export default function Form() {
     wallet: "",
     actions: [{ value: "" }],
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const router = useRouter();
   useEffect(() => {
     if (connected && publicKey) {
       setFormData((prevState) => ({
@@ -41,7 +44,7 @@ export default function Form() {
   }, [connected, publicKey]);
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value, type } = e.target;
     setFormData((prevState) => ({
@@ -82,25 +85,33 @@ export default function Form() {
       actions: prevState.actions.filter((_, i) => i !== index),
     }));
   };
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
 
-    async function BlinkPost() {
-      const data = await fetch("/api/blinks", {
+    try {
+      const response = await fetch("/api/blinks", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
       });
-      const res = await data.json();
 
-      console.log(res);
+      if (!response.ok) {
+        throw new Error("Failed to save data");
+      }
+
+      const result = await response.json();
+      console.log(result);
+
+      router.push("/discover");
+    } catch (error) {
+      console.error("Error submitting form:", error);
+    } finally {
+      setIsSubmitting(false);
     }
-    BlinkPost();
   };
-
   return (
     <div className="flex items-center justify-center p-4">
       <div className="w-full max-w-md bg-white dark:bg-neutral-900 border border-gray-200 dark:border-gray-800 rounded-lg shadow-sm">
@@ -248,8 +259,8 @@ export default function Form() {
                 Custom Input
               </Label>
             </div>
-            <Button type="submit" className="w-full">
-              Submit
+            <Button type="submit" className="w-full" disabled={isSubmitting}>
+              {isSubmitting ? "Submitting..." : "Submit"}
             </Button>
           </form>
         </div>

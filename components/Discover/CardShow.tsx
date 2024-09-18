@@ -1,35 +1,69 @@
 "use client";
 import { useState, useEffect } from "react";
-import fetchUserById from "@/lib/fetchUser"; // Import the server action
+import { fetchUserData } from "@/lib/fetchUser";
+import { Card } from "./card";
+import { useSession } from "next-auth/react";
+
+interface Blink {
+  id: string;
+  label: string;
+  username: string | null;
+  title: string;
+  description: string;
+  imageUrl: string;
+  createdAt: string;
+  userId: string;
+}
 
 const UserFetch = () => {
-  const [userData, setUserData] = useState(null);
+  const { data: session, status } = useSession();
+  const [userData, setUserData] = useState<Blink[] | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        const data = await fetchUserById("cm168wzb8000010pmx5fisfeu");
-        console.log(data.blinks); // Fetch user data from server
-        setUserData(data);
-        setLoading(false);
-      } catch (err: any) {
-        setError(err.message);
+      if (status === "authenticated" && session?.user?.id) {
+        try {
+          const data: Blink[] = await fetchUserData(session.user.id);
+          console.log(data)
+          setUserData(data);
+        } catch (err) {
+          const errorMessage =
+            err instanceof Error ? err.message : "An unknown error occurred";
+          setError(errorMessage);
+        } finally {
+          setLoading(false);
+        }
+      } else {
         setLoading(false);
       }
     };
 
     fetchData();
-  }, []);
+  }, [session, status]);
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
   return (
-    <div>
-      <h2>User Data</h2>
-      <pre className="text-black">{JSON.stringify(userData, null, 2)}</pre>
+    <div className="mt-5">
+      {userData && userData.length > 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {userData.map((blink) => (
+            <Card
+              id={blink.id}
+              key={blink.id}
+              name={blink.username}
+              title={blink.title}
+              image={blink.imageUrl}
+              description={blink.description}
+            />
+          ))}
+        </div>
+      ) : (
+        <div>No data available</div>
+      )}
     </div>
   );
 };
