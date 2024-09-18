@@ -26,7 +26,6 @@ const UserFetch = () => {
       if (status === "authenticated" && session?.user?.id) {
         try {
           const data: Blink[] = await fetchUserData(session.user.id);
-          console.log(data)
           setUserData(data);
         } catch (err) {
           const errorMessage =

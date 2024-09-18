@@ -103,7 +103,6 @@ export default function Form() {
       }
 
       const result = await response.json();
-      console.log(result);
 
       router.push("/discover");
     } catch (error) {
