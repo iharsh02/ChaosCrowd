@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { fetchUserData } from "@/lib/fetchUser";
 import { Card } from "./card";
 import { useSession } from "next-auth/react";
-
+import useStore from "@/zustand";
 interface Blink {
   id: string;
   label: string;
@@ -17,16 +17,19 @@ interface Blink {
 
 const UserFetch = () => {
   const { data: session, status } = useSession();
-  const [userData, setUserData] = useState<Blink[] | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const setBlink = useStore((state) => state.setBlink);
+  const userData = useStore((state) => state.blink);
+  const setdefault = useStore((state) => state.setDefaultBlink);
   useEffect(() => {
     const fetchData = async () => {
       if (status === "authenticated" && session?.user?.id) {
         try {
           const data: Blink[] = await fetchUserData(session.user.id);
-          setUserData(data);
+          setBlink(data);
+          setdefault(data);
         } catch (err) {
           const errorMessage =
             err instanceof Error ? err.message : "An unknown error occurred";
