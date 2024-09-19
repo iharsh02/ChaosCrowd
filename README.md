@@ -6,8 +6,6 @@
   <a href="#prerequisites">Prerequisites</a> •
   <a href="#setup">Setup</a> •
   <a href="#contributing">Contributing</a> •
-  <a href="#license">License</a> •
-  <a href="#contact">Contact</a>
 </p>
 <hr>
 Prerequisites
